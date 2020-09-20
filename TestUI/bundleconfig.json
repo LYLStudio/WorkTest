@@ -1,0 +1,26 @@
+[
+  {
+    "outputFileName": "Scripts/jquery-ui.min.js",
+    "inputFiles": [
+      "Scripts/jquery-ui.js"
+    ]
+  },
+  {
+    "outputFileName": "Content/jquery-ui.min.css",
+    "inputFiles": [
+      "Content/jquery-ui.css"
+    ]
+  },
+  {
+    "outputFileName": "Content/jquery-ui.structure.min.css",
+    "inputFiles": [
+      "Content/jquery-ui.structure.css"
+    ]
+  },
+  {
+    "outputFileName": "Content/jquery-ui.theme.min.css",
+    "inputFiles": [
+      "Content/jquery-ui.theme.css"
+    ]
+  }
+]

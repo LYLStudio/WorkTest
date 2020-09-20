@@ -1,0 +1,130 @@
+﻿@model TestUI.Models.CarLoan.SetAgreementViewModel
+
+<p>
+    <div style="margin: 3px;">
+        <h4>車貸資訊:</h4>
+        <ul class="droptrue sortable">
+            @foreach (var item in Model.LoanInfoList)
+            {
+                <li class="ui-state-default table-bordered carloan" data-acctbinding-loan="@item.LoanAcctId">
+                    <div>
+                        <div><b>貸款帳號 @item.LoanAcctId</b></div>
+                        <div>貸款金額 @item.Amt ,每月付款 @item.AmtPeriod </div>
+                        <div>每月付款日 @item.PayDD</div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+</p>
+<p>
+
+    <div style="margin:3px">
+        <h4>授權扣款約定活存帳號:</h4>
+        @foreach (var item in Model.AcctInfoList)
+        {
+            <div class="table-bordered">
+                <b>活存帳號:@item.AcctId ( @item.AcctName @item.AcctType )</b>
+                約定扣款之車貸帳號:
+                <ul class="droptrue sortable acctBinding" data-acctbinding-acct="@item.AcctId"></ul>
+            </div>
+        }
+    </div>
+</p>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Create" id="btnSubmit" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+
+
+@section Scripts {
+    <style>
+        .sortable {
+            list-style-type: none;
+            position: relative;
+            float: left;
+            background-color: #eee;
+            width: 100%;
+            height: auto;
+            min-height: 48px;
+            padding: 3px;
+        }
+
+            .sortable li {
+                margin: 5px;
+                padding: 0;
+                float: left;
+                width: auto;
+                height: auto;
+                /*font-size: 4em;*/
+                text-align: left;
+                background-color: #4be4d6;
+            }
+
+        .ui-over {
+            background: #FECA40;
+        }
+
+        .ui-out {
+            background: #4be4d6;
+        }
+    </style>
+    @Scripts.Render("~/bundles/jqueryval")
+<script>
+        $(function () {
+            $("ul.droptrue").sortable({
+                connectWith: "ul",
+                cursor: "move"
+            });
+
+            $("li.carloan").hover(
+                function () { $(this).css("background-color", "#FECA40"); },
+                function () { $(this).css("background-color", "##4be4d6"); }
+            );
+
+            $(".sortable").disableSelection();
+
+            $('#btnSubmit').click(function (e) {
+                
+                var data = [];
+
+                $("ul.acctBinding:has(li)").each(function (i, o) {
+                    var acct = $(o).data("acctbinding-acct");
+                    $(o).children('li').each(function (ii,oo) {
+                        data.push({ AcctId: acct, LoanAcctId: $(oo).data("acctbinding-loan") });
+                    });
+                });
+
+                var form = $('form');
+                var token = $('input[name="__RequestVerificationToken"]', form).val();
+
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("Index")",
+                    data: JSON.stringify(data),
+                    headers: { 'RequestVerificationToken': token},
+                    contentType: "application/json",
+                    error: function (o) {
+                        alert(o);
+                    }
+                });
+            });
+
+        });
+
+
+</script>
+
+}
